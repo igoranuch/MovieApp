@@ -1,35 +1,20 @@
-import { getRandomFilm } from '../helpers/helpers';
+import { getRandomFilm, saveToStorage } from '../helpers/helpers';
 import { IMovie } from '../types/types';
+import { getFavoritesIds } from '../helpers/helpers';
+import { renderHeartIcon } from './heartIcon';
 
 export function renderMovie(movie: IMovie) {
     const movieContainer = document.createElement('div');
     const movieCard = document.createElement('div');
     const image = document.createElement('img');
-    const iconSvg = document.createElementNS(
-        'http://www.w3.org/2000/svg',
-        'svg'
-    );
-    const iconPath = document.createElementNS(
-        'http://www.w3.org/2000/svg',
-        'path'
-    );
     const cardBody = document.createElement('div');
     const cardText = document.createElement('p');
     const dateContainer = document.createElement('div');
     const releaseDate = document.createElement('small');
-    iconSvg.setAttribute('fill', '#ff000078');
-    iconSvg.setAttribute('viewBox', '0 -2 18 22');
-    iconSvg.setAttribute('stroke', 'red');
-    iconSvg.setAttribute('width', '50');
-    iconSvg.setAttribute('height', '50');
-    iconPath.setAttribute(
-        'd',
-        'M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z'
-    );
-    iconPath.setAttribute('fill-rule', 'evenodd');
+    const iconSvg = renderHeartIcon(movie);
+
     movieContainer.classList.add('col-lg-3', 'col-md-4', 'col-12', 'p-2');
     movieCard.classList.add('card', 'shadow-sm');
-    iconSvg.classList.add('bi', 'bi-heart-fill', 'position-absolute', 'p');
     cardBody.classList.add('card-body');
     cardText.classList.add('card-text', 'truncate');
     dateContainer.classList.add(
@@ -47,7 +32,6 @@ export function renderMovie(movie: IMovie) {
     releaseDate.textContent = movie.releaseDate;
     movieContainer.appendChild(movieCard);
     movieCard.appendChild(image);
-    iconSvg.appendChild(iconPath);
     movieCard.appendChild(iconSvg);
     cardBody.appendChild(cardText);
     movieCard.appendChild(cardBody);
@@ -84,6 +68,8 @@ export function renderRandomMovie(movies: IMovie[]): void {
 
     randomMovieName.textContent = randomMovie.originalTitle;
     randomMovieDescription.textContent = randomMovie.overview;
-    randomMovieBackground.style.backgroundImage = `url(https://image.tmdb.org/t/p/original/${randomMovie.posterPath})`;
+    randomMovie.backdropPath
+        ? (randomMovieBackground.style.backgroundImage = `url(https://image.tmdb.org/t/p/original/${randomMovie.backdropPath})`)
+        : (randomMovieBackground.style.backgroundImage = `url(./images/notfoundBanner.jpg)`);
     randomMovieBackground.style.backgroundSize = 'cover';
 }
