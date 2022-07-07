@@ -1,75 +1,111 @@
-import { IMovie, movieQuery } from './types/types';
+import { movieQuery } from './types/types';
 import {
-    getMovies,
-    getMovieById,
-    searchMovies,
-    getFavoriteMovies,
-} from './api/api';
-import { renderMovies, renderRandomMovie } from './components/movieCards';
-import { movieMapper, saveToStorage, getFavoritesIds } from './helpers/helpers';
-import { paginate } from './types/types';
-
-const searchButton = <HTMLButtonElement>document.querySelector('#submit');
-const popularButton = <HTMLButtonElement>document.querySelector('#popular');
-const topRatedButton = <HTMLButtonElement>document.querySelector('#top_rated');
-const upcomingButton = <HTMLButtonElement>document.querySelector('#upcoming');
-const loadMoreButton = <HTMLButtonElement>document.querySelector('#load-more');
-const favoritesButton = <HTMLButtonElement>(
-    document.querySelector('.navbar-toggler')
-);
-const filmContainer = <HTMLDivElement>document.querySelector('#film-container');
-const favoriteMoviesContainer = <HTMLDivElement>(
-    document.querySelector('#favorite-movies')
-);
-const input = <HTMLInputElement>document.querySelector('#search');
+    searchButton,
+    moviesContainer,
+    popularButton,
+    topRatedButton,
+    upcomingButton,
+    favoritesButton,
+    favoriteMoviesContainer,
+    loadMoreButton,
+    searchInput,
+} from './common/common';
+import { seeder, mountMovies, mountFavorites } from './services/services';
 
 export async function render() {
-    window.onload = seeder;
+    let paginate: movieQuery = {
+        state: 'popular',
+        page: 1,
+    };
+
+    window.onload = () => seeder(paginate);
 
     searchButton.addEventListener('click', () => {
-        if (input.value.trim() != '') mountMovies('search');
+        if (searchInput.value.trim() != '') {
+            moviesContainer.innerHTML = '';
+
+            paginate = {
+                state: 'search',
+                page: 1,
+            };
+
+            mountMovies(paginate);
+        }
     });
 
     popularButton.addEventListener('click', () => {
-        mountMovies('popular');
+        moviesContainer.innerHTML = '';
+
+        paginate = {
+            state: 'popular',
+            page: 1,
+        };
+
+        mountMovies(paginate);
     });
 
     topRatedButton.addEventListener('click', () => {
-        mountMovies('top_rated');
+        moviesContainer.innerHTML = '';
+
+        paginate = {
+            state: 'top_rated',
+            page: 1,
+        };
+
+        mountMovies(paginate);
     });
 
     upcomingButton.addEventListener('click', () => {
-        mountMovies('upcoming');
-    });
+        moviesContainer.innerHTML = '';
 
-    loadMoreButton.addEventListener('click', () => {});
+        paginate = {
+            state: 'upcoming',
+            page: 1,
+        };
+
+        mountMovies(paginate);
+    });
 
     favoritesButton.addEventListener('click', () => {
+        favoriteMoviesContainer.innerHTML = '';
         mountFavorites();
     });
-}
 
-async function seeder() {
-    const movies = movieMapper(await getMovies('popular'));
-    renderRandomMovie(movies);
-    renderMovies(filmContainer, movies, 'default');
-}
+    loadMoreButton.addEventListener('click', () => {
+        if (paginate.state == 'popular') {
+            paginate = {
+                state: paginate.state,
+                page: paginate.page + 1,
+            };
 
-async function mountMovies(query: movieQuery) {
-    let rawMovies;
+            mountMovies(paginate);
+        }
 
-    if (query == 'search') {
-        rawMovies = await searchMovies(input.value);
-    } else {
-        rawMovies = await getMovies(query);
-    }
+        if (paginate.state == 'upcoming') {
+            paginate = {
+                state: paginate.state,
+                page: paginate.page + 1,
+            };
 
-    const movies = movieMapper(rawMovies);
-    renderMovies(filmContainer, movies, 'default');
-}
+            mountMovies(paginate);
+        }
 
-async function mountFavorites() {
-    const favoriteMovies = await getFavoriteMovies(getFavoritesIds());
+        if (paginate.state == 'top_rated') {
+            paginate = {
+                state: paginate.state,
+                page: paginate.page + 1,
+            };
 
-    renderMovies(favoriteMoviesContainer, favoriteMovies, 'favorite');
+            mountMovies(paginate);
+        }
+
+        if (paginate.state == 'search') {
+            paginate = {
+                state: paginate.state,
+                page: paginate.page + 1,
+            };
+
+            mountMovies(paginate);
+        }
+    });
 }

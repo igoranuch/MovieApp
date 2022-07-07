@@ -49,7 +49,6 @@ export function renderMovies(
     movies: IMovie[],
     type: movieType
 ): void {
-    moviesContainer.innerHTML = '';
     movies.map((movie: IMovie) => {
         const movieCard = renderMovie(movie, type);
         moviesContainer.appendChild(movieCard);

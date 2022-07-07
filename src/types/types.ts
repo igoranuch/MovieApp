@@ -7,11 +7,9 @@ export interface IMovie {
     backdropPath: string | null;
 }
 
-export type movieQuery = 'popular' | 'upcoming' | 'top_rated' | 'search';
-
-export const paginate = {
-    state: '',
-    page: 1,
+export type movieQuery = {
+    state: 'popular' | 'upcoming' | 'top_rated' | 'search';
+    page: number;
 };
 
 export type movieType = 'favorite' | 'default';
