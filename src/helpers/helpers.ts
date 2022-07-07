@@ -1,5 +1,9 @@
 import { IMovie } from '../types/types';
 
+export function movieMapper(response: any): IMovie[] {
+    return response.results.map((movie: any) => normalize(movie));
+}
+
 export function normalize(element: any): IMovie {
     const movie: IMovie = {
         id: element.id,
@@ -13,15 +17,11 @@ export function normalize(element: any): IMovie {
     return movie;
 }
 
-export function movieMapper(response: any): IMovie[] {
-    return response.results.map((movie: any) => normalize(movie));
-}
-
-export function getRandomFilm(movies: IMovie[]) {
+export function getRandomFilm(movies: IMovie[]): IMovie {
     return movies[Math.floor(Math.random() * movies.length)];
 }
 
-export function saveToStorage(movieIds: number[]) {
+export function saveToStorage(movieIds: number[]): void {
     window.localStorage.setItem('favorites', JSON.stringify(movieIds));
 }
 

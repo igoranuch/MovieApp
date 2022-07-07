@@ -12,7 +12,7 @@ import {
 } from './common/common';
 import { seeder, mountMovies, mountFavorites } from './services/services';
 
-export async function render() {
+export async function render(): Promise<void> {
     let paginate: movieQuery = {
         state: 'popular',
         page: 1,

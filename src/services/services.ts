@@ -8,13 +8,13 @@ import { renderRandomMovie, renderMovies } from '../components/movieCards';
 import { movieMapper, getFavoritesIds } from '../helpers/helpers';
 import { movieQuery } from '../types/types';
 
-export async function seeder(paginate: movieQuery) {
+export async function seeder(paginate: movieQuery): Promise<void> {
     const movies = movieMapper(await getMovies(paginate));
     renderRandomMovie(movies);
     renderMovies(moviesContainer, movies, 'default');
 }
 
-export async function mountMovies(paginate: movieQuery) {
+export async function mountMovies(paginate: movieQuery): Promise<void> {
     let rawMovies;
 
     if (paginate.state == 'search') {
@@ -27,7 +27,7 @@ export async function mountMovies(paginate: movieQuery) {
     renderMovies(moviesContainer, movies, 'default');
 }
 
-export async function mountFavorites() {
+export async function mountFavorites(): Promise<void> {
     const favoriteMovies = await getFavoriteMovies(getFavoritesIds());
 
     renderMovies(favoriteMoviesContainer, favoriteMovies, 'favorite');

@@ -1,10 +1,8 @@
-import { getRandomFilm, saveToStorage } from '../helpers/helpers';
+import { getRandomFilm } from '../helpers/helpers';
 import { IMovie, movieType } from '../types/types';
-import { getFavoritesIds } from '../helpers/helpers';
 import { renderHeartIcon } from './heartIcon';
-import { getFavoriteMovies } from '../api/api';
 
-export function renderMovie(movie: IMovie, type: movieType) {
+export function renderMovie(movie: IMovie, type: movieType): HTMLDivElement {
     const movieContainer = document.createElement('div');
     const movieCard = document.createElement('div');
     const image = document.createElement('img');
