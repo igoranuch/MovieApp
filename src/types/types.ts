@@ -13,3 +13,5 @@ export const paginate = {
     state: '',
     page: 1,
 };
+
+export type movieType = 'favorite' | 'default';

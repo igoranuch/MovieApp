@@ -1,5 +1,10 @@
 import { IMovie, movieQuery } from './types/types';
-import { getMovies, getMovieById, searchMovies } from './api/api';
+import {
+    getMovies,
+    getMovieById,
+    searchMovies,
+    getFavoriteMovies,
+} from './api/api';
 import { renderMovies, renderRandomMovie } from './components/movieCards';
 import { movieMapper, saveToStorage, getFavoritesIds } from './helpers/helpers';
 import { paginate } from './types/types';
@@ -13,7 +18,7 @@ const favoritesButton = <HTMLButtonElement>(
     document.querySelector('.navbar-toggler')
 );
 const filmContainer = <HTMLDivElement>document.querySelector('#film-container');
-const favoriteMovies = <HTMLDivElement>(
+const favoriteMoviesContainer = <HTMLDivElement>(
     document.querySelector('#favorite-movies')
 );
 const input = <HTMLInputElement>document.querySelector('#search');
@@ -39,13 +44,15 @@ export async function render() {
 
     loadMoreButton.addEventListener('click', () => {});
 
-    favoritesButton.addEventListener('click', () => {});
+    favoritesButton.addEventListener('click', () => {
+        mountFavorites();
+    });
 }
 
 async function seeder() {
     const movies = movieMapper(await getMovies('popular'));
     renderRandomMovie(movies);
-    renderMovies(filmContainer, movies);
+    renderMovies(filmContainer, movies, 'default');
 }
 
 async function mountMovies(query: movieQuery) {
@@ -58,7 +65,11 @@ async function mountMovies(query: movieQuery) {
     }
 
     const movies = movieMapper(rawMovies);
-    renderMovies(filmContainer, movies);
+    renderMovies(filmContainer, movies, 'default');
 }
 
-async function mountFavorites(movieIds: []) {}
+async function mountFavorites() {
+    const favoriteMovies = await getFavoriteMovies(getFavoritesIds());
+
+    renderMovies(favoriteMoviesContainer, favoriteMovies, 'favorite');
+}

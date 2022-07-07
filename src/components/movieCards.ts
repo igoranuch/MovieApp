@@ -1,9 +1,10 @@
 import { getRandomFilm, saveToStorage } from '../helpers/helpers';
-import { IMovie } from '../types/types';
+import { IMovie, movieType } from '../types/types';
 import { getFavoritesIds } from '../helpers/helpers';
 import { renderHeartIcon } from './heartIcon';
+import { getFavoriteMovies } from '../api/api';
 
-export function renderMovie(movie: IMovie) {
+export function renderMovie(movie: IMovie, type: movieType) {
     const movieContainer = document.createElement('div');
     const movieCard = document.createElement('div');
     const image = document.createElement('img');
@@ -13,7 +14,9 @@ export function renderMovie(movie: IMovie) {
     const releaseDate = document.createElement('small');
     const iconSvg = renderHeartIcon(movie);
 
-    movieContainer.classList.add('col-lg-3', 'col-md-4', 'col-12', 'p-2');
+    type == 'favorite'
+        ? movieContainer.classList.add('col-12', 'p-2')
+        : movieContainer.classList.add('col-lg-3', 'col-md-4', 'col-12', 'p-2');
     movieCard.classList.add('card', 'shadow-sm');
     cardBody.classList.add('card-body');
     cardText.classList.add('card-text', 'truncate');
@@ -43,11 +46,12 @@ export function renderMovie(movie: IMovie) {
 
 export function renderMovies(
     moviesContainer: HTMLDivElement,
-    movies: IMovie[]
+    movies: IMovie[],
+    type: movieType
 ): void {
     moviesContainer.innerHTML = '';
     movies.map((movie: IMovie) => {
-        const movieCard = renderMovie(movie);
+        const movieCard = renderMovie(movie, type);
         moviesContainer.appendChild(movieCard);
         return movieCard;
     });

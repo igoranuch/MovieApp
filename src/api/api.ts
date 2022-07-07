@@ -1,5 +1,6 @@
 import { api_key } from '../common/common';
-import { movieQuery } from '../types/types';
+import { normalize } from '../helpers/helpers';
+import { IMovie, movieQuery } from '../types/types';
 
 export async function searchMovies(inputValue: string) {
     try {
@@ -25,7 +26,7 @@ export async function getMovies(query: movieQuery) {
     }
 }
 
-export async function getMovieById(id: string) {
+export async function getMovieById(id: number) {
     try {
         const response = await fetch(
             `https://api.themoviedb.org/3/movie/${id}?api_key=${api_key}&language=en-US`
@@ -34,4 +35,18 @@ export async function getMovieById(id: string) {
     } catch (error) {
         throw error;
     }
+}
+
+export async function getFavoriteMovies(movieIds: number[]) {
+    const favoriteMovies: IMovie[] = [];
+
+    await Promise.all(
+        movieIds.map(async (movieId) => {
+            const movie = await getMovieById(movieId);
+            const normalizedMovie = normalize(movie);
+            favoriteMovies.push(normalizedMovie);
+        })
+    );
+
+    return favoriteMovies;
 }
